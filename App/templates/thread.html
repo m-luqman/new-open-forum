@@ -13,7 +13,7 @@
 
 <head>
 	{{head(title=title)}}
-	<link href="../static/css/thread.css" rel="stylesheet">
+	<link href="{{ url_for('static', filename='css/thread.css') }}" rel="stylesheet">
   	<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 
