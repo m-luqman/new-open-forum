@@ -46,7 +46,7 @@
 			<div class="form-group">
 				<label for="comment">Comment:</label>
 				<textarea class="form-control" rows="5" name="description" id="comment-description"></textarea>
-				<input style="display:none" name="topicID" value="{{posts['topicID']}}">
+				<input style="display:none" name="topicID" value="{{posts[0]['topicID']}}">
 				{{button("create comment")}}
 			</div>
 		</form>
