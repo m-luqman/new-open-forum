@@ -1,0 +1,137 @@
+{% from 'macros.html' import header %}
+{% from 'macros.html' import create_topic %}
+{% from 'macros.html' import head %}
+{% from 'macros.html' import formulate_link %}
+{% from 'macros.html' import creation_button %}
+{% from 'macros.html' import login_button %}
+
+<!DOCTYPE html>
+
+<head>
+	{{head(title="Leaderboard")}}
+	<link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table.min.css">
+	<script src="https://unpkg.com/bootstrap-table@1.15.3/dist/bootstrap-table.min.js"></script>
+	<script src="https://unpkg.com/bootstrap-table@1.15.4/dist/extensions/mobile/bootstrap-table-mobile.min.js"></script>
+</head>
+
+<body class="container">
+
+	{{header(isLoggedIn)}}
+	<div class="ibox-content ">
+		<ul class="nav nav-tabs" id="myTab" role="tablist">
+		  <li class="nav-item">
+		    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">All time great users</a>
+		  </li>
+		  <li class="nav-item">
+		    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">All time great topics</a>
+		  </li>
+		  <li class="nav-item">
+		    <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Trending topics</a>
+		  </li>
+		</ul>
+		<div class="tab-content" id="myTabContent">
+		  <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+			<table 
+				id="greatUsers"
+				data-url="/greatUsers"
+				data-toggle="table" 
+				data-virtual-scroll="true" 
+				data-pagination="true"
+				data-pagination-v-align="top"
+				data-search="true" 
+				data-show-search-clear-button="true" 
+				data-mobile-responsive="true" 
+				data-check-on-init="true" 
+				data-min-width="750">
+				<thead>
+					<tr id="iwoq03">
+						<th data-field="username">Username
+						</th>
+						<th data-field="totalPoints">Points
+						</th>
+						<th data-field="badge">Badge
+						</th>
+					</tr>
+				</thead>
+				<tr></tr>
+			</table>
+		  </div>
+		  <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+			<table 
+				id="greatTopics"
+				data-url="/greatTopics"
+				data-toggle="table" 
+				data-virtual-scroll="true" 
+				data-pagination="true"
+				data-pagination-v-align="top"
+				data-search="true" 
+				data-show-search-clear-button="true" 
+				data-mobile-responsive="true" 
+				data-check-on-init="true" 
+				data-min-width="750">
+				<thead>
+					<tr id="iwoq03">
+						<th data-field="title">Title
+						</th>
+						<th data-field="upvoteCount">Upvote count
+						</th>
+					</tr>
+				</thead>
+				<tr></tr>
+			</table>
+		  </div>
+		  <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+			<div class="dropdown mt-5">
+			  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			    Date range: <span id="selected-range"></span>
+			  </button>
+			  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+			    <a class="dropdown-item" href="#">day</a>
+			    <a class="dropdown-item" href="#">week</a>
+			    <a class="dropdown-item" href="#">month</a>
+			  </div>
+			</div>
+			<table 
+				id="trendingTopics"
+				data-toggle="table" 
+				data-virtual-scroll="true" 
+				data-pagination="true"
+				data-pagination-v-align="top"
+				data-search="true" 
+				data-show-search-clear-button="true" 
+				data-mobile-responsive="true" 
+				data-min-width="750">
+				<thead>
+					<tr id="iwoq03">
+						<th data-field="title">Title
+						</th>
+						<th data-field="upvoteCount">Upvote count
+						</th>
+					</tr>
+				</thead>
+				<tr></tr>
+			</table>		  
+		  </div>
+		</div>
+	</div>
+	<script>
+	
+	initialize();
+	
+	function initialize(){
+		let first_item_text=$( ".dropdown-menu a" ).first().text();
+		$('#selected-range').text(first_item_text);
+		loadTable("#trendingTopics","/trendingTopics/"+first_item_text);
+	}
+	
+	$('.dropdown-menu a').click(function(e){
+	  e.preventDefault();	
+	  $('#selected-range').text($(this).text());
+	  loadTable("#trendingTopics","/trendingTopics/"+$(this).text())
+	});
+  	
+  	function loadTable(selector,endpoint){
+		$(selector).bootstrapTable('refresh', {url: endpoint});
+	}
+	</script>
+</body>

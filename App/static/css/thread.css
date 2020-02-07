@@ -1,0 +1,34 @@
+.card-white .card-heading {
+  color: #333;
+  background-color: #fff;
+  border-color: #ddd;
+  border-top: 1px solid #dddddd;
+  border-bottom: 1px solid #dddddd;
+}
+.card-white  .card-footer {
+  background-color: #fff;
+  border-color: #ddd;
+}
+.card-white .h5 {
+    font-size:14px;
+    //font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+.card-white .time {
+    font-size:12px;
+    //font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+.post .post-heading {
+  height: 95px;
+  padding: 20px 15px;
+}
+.post .post-description {
+  padding: 15px;
+}
+.post .post-description p {
+  font-size: 14px;
+}
+
+.post .post-footer {
+  border-top: 1px solid #ddd;
+  padding: 15px;
+}

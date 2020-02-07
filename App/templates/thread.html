@@ -1,0 +1,130 @@
+{% from 'macros.html' import header %}
+{% from 'macros.html' import topic %}
+{% from 'macros.html' import create_card %}
+{% from 'macros.html' import head %}
+{% from 'macros.html' import formulate_link %}
+{% from 'macros.html' import button %}
+{% from 'macros.html' import login_button %}
+{% from 'macros.html' import upvote_button %}
+{% from 'macros.html' import comment_box %}
+{% from 'macros.html' import thread_title %}
+
+<!DOCTYPE html>
+
+<head>
+	{{head(title=title)}}
+	<link href="../static/css/thread.css" rel="stylesheet">
+  	<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+
+<body class="container">
+
+	{{header(isLoggedIn)}}
+	<div class="card-heading card-white p-3">
+		<h4>{{title}}</h4>
+	</div>
+	<div id="comment-section">	
+		{% for post in posts %}
+	
+			{{
+				create_card(
+					user=post["postingUser"]
+				   ,description=post["description"]
+				   ,createdTime=post["createdTime"]
+				   ,isLoggedIn=isLoggedIn
+				   ,cardID=post["postID"]
+				   ,upvoteCount=post["upvoteCount"]
+				)
+			}}
+				
+		{% endfor %}
+	</div>
+	
+	{% if isLoggedIn %}
+		
+		<form id="comment-box" class="card card-white post py-md-3 px-md-3">
+			<div class="form-group">
+				<label for="comment">Comment:</label>
+				<textarea class="form-control" rows="5" name="description" id="comment-description"></textarea>
+				<input style="display:none" name="topicID" value="{{posts['topicID']}}">
+				{{button("create comment")}}
+			</div>
+		</form>
+		
+	{% else %}
+
+		{{login_button("Login to create a comment")}}
+
+	{% endif %}
+
+	<script>
+		
+		$( ".markdown" ).each(function() {
+		
+			$(this).html(
+			
+				marked($(this).html())
+				
+			);
+		});
+				
+		$(document.body).on('click','.upvote',function(e) {
+		    
+		    let id = $(this).attr('data-id');
+		    
+		    let url='{{url_for('upvote')}}';
+		    
+		    let data= {postID: id}
+		    
+		    var that = $(this);
+		    
+			$.post(url,data)
+			    .done(function(response){  
+
+			    	that.find(".upvote-count").text(response);
+			
+			    })
+			    .fail(function(xhr, status, error) {
+			
+					alert("Already upvoted")
+			
+			    });
+		});
+		$(document.body).on('submit','#comment-box',function(e) {
+		    
+		    let url='{{url_for('save_comment')}}';
+		    
+		    let data= $( this ).serialize();
+		    
+		    e.preventDefault();
+		    
+			$.post(url,data)
+			    .done(function(response){  
+					
+					$("#comment-description").val('');
+					
+					$("#comment-section").append(`{{create_card(isLoggedIn)}}`);
+					
+					$("#comment-section .thread-card .username")
+						.last().text(response["postingUser"]);
+
+					$("#comment-section .thread-card .time")
+						.last().text(response["createdTime"]);
+					
+					$("#comment-section .thread-card .markdown")
+						.last().html(marked(response["description"]));
+
+					$("#comment-section .thread-card .upvote .upvote-count")
+						.last().text(response["upvoteCount"]);
+
+					$("#comment-section .thread-card .upvote ")
+						.last().attr("data-id",response["postID"]);
+
+			    })
+			    .fail(function(xhr, status, error) {
+
+			    });
+		});
+		
+	</script>
+</body>

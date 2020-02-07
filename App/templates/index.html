@@ -1,0 +1,41 @@
+{% from 'macros.html' import header %}
+{% from 'macros.html' import create_topic %}
+{% from 'macros.html' import head %}
+{% from 'macros.html' import formulate_link %}
+{% from 'macros.html' import link %}
+{% from 'macros.html' import login_button %}
+
+<!DOCTYPE html>
+
+<head>
+	{{head(title="Open Forum")}}
+</head>
+
+<body class="container">
+
+	{{header(isLoggedIn)}}
+		
+	<div class="ibox-content ">
+
+		{% if isLoggedIn %}
+			{{link("Create Post",url_for('get_new_post_page'))}}
+
+		{% else %}
+			{{login_button("Login to create a post")}}
+		{% endif %}
+		
+		{% for topic in topics %}
+
+			{{
+			create_topic(
+				url=url_for('get_thread_page',topicID=topic["topicID"],title=topic["title"])
+			   ,title=topic["title"]
+			   ,noOfComments=topic["secondaryPostCount"]
+			   ,user=topic["postingUser"]
+			   ,noOfUpvotes=topic["upvoteCount"])
+			}}
+
+		{% endfor %}
+
+	</div>
+</body>
