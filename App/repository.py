@@ -51,7 +51,7 @@ def get_trending_topics(level,offset=0,limit=10):
     
     from datetime import date, timedelta
     today = date.today()
-    level=level.lower()
+    level=level.lower().strip()
     
     if level == "day":
         otherday = today - timedelta(2)
@@ -67,8 +67,8 @@ def get_trending_topics(level,offset=0,limit=10):
         order_by(Post.upvoteCount.desc(), Topic.secondaryPostCount.desc()).\
         options(contains_eager(Topic.posts)).\
         all()
-
-    return [row2dict(topic) for topic in tabularTopics]
+    
+    return flatten_primary_posts(tabularTopics)
     
 def get_great_users(offset=0,limit=10):
     
