@@ -85,9 +85,11 @@
 			
 			    })
 			    .fail(function(xhr, status, error) {
-			
-					alert("Already upvoted")
-			
+				    for (var i = 0; i < 5; i++) {
+						that.animate({ marginLeft: '5px' }, 50);
+						that.animate({ marginLeft: '-5px' }, 50);
+					}
+					that.animate({ marginLeft: 0 }, 50);					
 			    });
 		});
 		$(document.body).on('submit','#comment-box',function(e) {
