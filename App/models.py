@@ -35,11 +35,17 @@ class User(UserMixin, db.Model):
 #         return 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(digest, size)
     @hybrid_property
     def total_points(self):
-        if not (self.primaryPostCount and self.secondaryPostCount):
-            return 0
         PRIMARY_POST_POINTS=2
         SECONDARY_POST_POINTS=1
-        return PRIMARY_POST_POINTS*self.primaryPostCount+SECONDARY_POST_POINTS*self.secondaryPostCount
+        
+        primaryPostCount=0
+        secondaryPostCount=0
+        
+        if self.primaryPostCount: primaryPostCount=self.primaryPostCount
+        if self.secondaryPostCount: secondaryPostCount=self.secondaryPostCount
+        
+        return PRIMARY_POST_POINTS*primaryPostCount+SECONDARY_POST_POINTS*secondaryPostCount
+    
     @hybrid_property
     def badge(self):
         points=self.total_points

@@ -37,8 +37,8 @@ def get_great_topics(offset=0,limit=10):
 
 def get_trending_topics(level,offset=0,limit=10):
     
-    from datetime import date, timedelta
-    today = date.today()
+    from datetime import datetime, timedelta
+    today = datetime.today()
     level=level.lower().strip()
     
     if level == "day":
@@ -53,9 +53,8 @@ def get_trending_topics(level,offset=0,limit=10):
         filter(Post.postType == 'PRIMARY').\
         filter(Post.createdTime.between(otherday, today)).\
         order_by(Post.upvoteCount.desc(), Topic.secondaryPostCount.desc()).\
-        options(contains_eager(Topic.posts)).\
-        all()
-    
+        options(contains_eager(Topic.posts))
+            
     return [topic.serialize_with_one_post for topic in topics]
     
 def get_great_users(offset=0,limit=10):

@@ -163,7 +163,6 @@ def callback():
 
     # Create a user in your db with the information provided
     # by Google
-    print(unique_id)
     updatedUserName=users_email.split("@")[0]
     user = User(
         id_=unique_id, username=updatedUserName, fullname=users_name, email=users_email, profile_pic=picture
@@ -173,9 +172,6 @@ def callback():
     # if not User.get(unique_id):
     #     User.create(unique_id, users_name, users_email, picture)
     import time
-    print("comparing: ")
-    print(user.serialize)
-    print([user.serialize for user in User.query.all()])
     if not User.query.filter_by(id_=unique_id).first():
         db.session.add(user)
         db.session.flush()
