@@ -197,6 +197,10 @@ def callback():
     # Send user back to homepage
     return redirect(url_for("get_home_page"))
 
+@app.route('/debug-sentry')
+def trigger_error():
+    division_by_zero = 1 / 0
+
 # @app.route("/register")
 # @app.route("/upload/image", methods=['GET', 'POST'])
 

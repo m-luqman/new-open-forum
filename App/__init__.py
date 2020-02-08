@@ -5,7 +5,8 @@ from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_login import UserMixin
 from oauthlib.oauth2 import WebApplicationClient
-
+import sentry_sdk
+from sentry_sdk.integrations.flask import FlaskIntegration
 
 
 app = Flask(__name__)
@@ -16,6 +17,10 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 google_client = WebApplicationClient(app.config['GOOGLE_CLIENT_ID'])
+sentry_sdk.init(
+    dsn=app.config['SENTRY_KEY'],
+    integrations=[FlaskIntegration()]
+)
 
 
 from App import routes, models, repository

@@ -55,8 +55,7 @@ def get_trending_topics(level,offset=0,limit=10):
         order_by(Post.upvoteCount.desc(), Topic.secondaryPostCount.desc()).\
         options(contains_eager(Topic.posts)).\
         all()
-    
-        
+            
     return [topic.serialize_with_one_post for topic in topics]
     
 def get_great_users(offset=0,limit=10):

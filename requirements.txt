@@ -25,3 +25,4 @@ pymysql==0.9.3
 gunicorn
 requests
 webargs
+sentry-sdk[flask]==0.14.1
