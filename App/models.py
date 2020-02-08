@@ -9,6 +9,7 @@ from flask import Flask
 from flask_migrate import Migrate
 from sqlalchemy.orm import relationship
 from sqlalchemy.databases import mysql
+from sqlalchemy.ext.hybrid import hybrid_property
 
 @login_manager.user_loader
 def load_user(id_):
@@ -32,14 +33,14 @@ class User(UserMixin, db.Model):
 #     def avatar(self, size):
 #         digest = md5(self.email.lower().encode('utf-8')).hexdigest()
 #         return 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(digest, size)
-    @property
+    @hybrid_property
     def total_points(self):
         if not (self.primaryPostCount and self.secondaryPostCount):
             return 0
         PRIMARY_POST_POINTS=2
         SECONDARY_POST_POINTS=1
         return PRIMARY_POST_POINTS*self.primaryPostCount+SECONDARY_POST_POINTS*self.secondaryPostCount
-    @property
+    @hybrid_property
     def badge(self):
         points=self.total_points
         if points<5:
