@@ -37,6 +37,8 @@
 
 	<script>
 	    $('#editor').markdownEditor({
+	      	imageUpload: true, 
+  			uploadPath: '/upload/image',
 	        preview: true,
 	        onPreview: function (content, callback) {
 	            callback( marked(content) );

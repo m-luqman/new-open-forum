@@ -105,7 +105,7 @@ class Post(db.Model):
     postID=db.Column(db.Integer, primary_key=True)
     topicID=db.Column(db.Integer, db.ForeignKey(Topic.topicID))
     postingUser=db.Column(db.String(20), db.ForeignKey(User.username))
-    description=db.Column(db.String(80), nullable=False)
+    description=db.Column(db.String(800), nullable=False)
     upvoteCount=db.Column(db.Integer, default=0)
     createdTime=db.Column(db.DateTime, default=datetime.datetime.now)
     postType=db.Column(db.String(10), nullable=False)

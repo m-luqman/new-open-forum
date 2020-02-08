@@ -11,7 +11,11 @@ from webargs import fields
 from webargs.flaskparser import use_args
 from App import repository
 from App import app, google_client, db, login_manager
-
+from flask.json import jsonify
+from werkzeug.utils import secure_filename
+from os.path import join, dirname, realpath
+from _testbuffer import staticarray
+import imghdr
 
 def get_google_provider_cfg():
     return requests.get(app.config['GOOGLE_DISCOVERY_URL']).json()
@@ -197,12 +201,18 @@ def callback():
     # Send user back to homepage
     return redirect(url_for("get_home_page"))
 
-@app.route('/debug-sentry')
-def trigger_error():
-    division_by_zero = 1 / 0
+@app.route("/upload/image", methods=['GET', 'POST'])
+def upload_image():
+    image_links=[]
+    if request.method == "POST":
+        for image in request.files.values():
+            filename = secure_filename(image.filename)
+            image.save("static/images/"+filename)
+            image_links.append(url_for("static",filename="images/"+filename))
+            
+    return jsonify(image_links)    
 
 # @app.route("/register")
-# @app.route("/upload/image", methods=['GET', 'POST'])
 
 
 
