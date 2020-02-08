@@ -30,7 +30,7 @@
 				create_card(
 					user=post["postingUser"]
 				   ,description=post["description"]
-				   ,createdTime=post["createdTime"]
+				   ,createdTime=post["timeAgo"]
 				   ,isLoggedIn=isLoggedIn
 				   ,cardID=post["postID"]
 				   ,upvoteCount=post["upvoteCount"]
@@ -111,7 +111,7 @@
 						.last().text(response["postingUser"]);
 
 					$("#comment-section .thread-card .time")
-						.last().text(response["createdTime"]);
+						.last().text(response["timeAgo"]);
 					
 					$("#comment-section .thread-card .markdown")
 						.last().html(marked(response["description"]));

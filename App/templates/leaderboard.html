@@ -85,7 +85,7 @@
 			  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 			    Date range: <span id="selected-range"></span>
 			  </button>
-			  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+			  <div id="trending-menu" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
 			    <a class="dropdown-item" href="#">day</a>
 			    <a class="dropdown-item" href="#">week</a>
 			    <a class="dropdown-item" href="#">month</a>
@@ -115,16 +115,16 @@
 		</div>
 	</div>
 	<script>
-	
-	initialize();
-	
+
+	$(document).ready(initialize)
+		
 	function initialize(){
-		let first_item_text=$( ".dropdown-menu a" ).first().text();
+		let first_item_text=$( "#trending-menu a" ).first().text();
 		$('#selected-range').text(first_item_text);
 		loadTable("#trendingTopics","/trendingTopics/"+first_item_text);
 	}
 	
-	$('.dropdown-menu a').click(function(e){
+	$('#trending-menu a').click(function(e){
 	  e.preventDefault();	
 	  $('#selected-range').text($(this).text());
 	  loadTable("#trendingTopics","/trendingTopics/"+$(this).text())
@@ -132,6 +132,6 @@
   	
   	function loadTable(selector,endpoint){
 		$(selector).bootstrapTable('refresh', {url: endpoint});
-	}
+	}	
 	</script>
 </body>

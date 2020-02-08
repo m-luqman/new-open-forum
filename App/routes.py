@@ -12,11 +12,6 @@ from webargs.flaskparser import use_args
 from App import repository
 from App import app, google_client, db, login_manager
 
-# GOOGLE_CLIENT_ID = "530958200715-qau4bjsgpu9dfn3h4gtvokekr41fp950.apps.googleusercontent.com"
-# GOOGLE_CLIENT_SECRET = "OM46KDb7CqbdeTRsX7be_xg1"
-# GOOGLE_DISCOVERY_URL = ("https://accounts.google.com/.well-known/openid-configuration")
-
-# google_client = WebApplicationClient(GOOGLE_CLIENT_ID)
 
 def get_google_provider_cfg():
     return requests.get(app.config['GOOGLE_DISCOVERY_URL']).json()
@@ -24,7 +19,6 @@ def get_google_provider_cfg():
 
 @app.route("/")
 def get_home_page(offset=0,limit=10):
-
     return render_template('index.html'
                            ,topics=get_chronological_topics(offset=offset,limit=limit)
                            ,isLoggedIn=current_user.is_authenticated)
@@ -38,11 +32,15 @@ def get_thread_page(topicID,title,offset=0,limit=10):
                            ,posts=get_reverse_chronological_posts(topicID,offset=offset,limit=limit)
                            ,isLoggedIn=current_user.is_authenticated)
 
-
 @app.route("/leaderboard")
 def get_leaderboard_page():
-    
     return render_template('leaderboard.html'
+                           ,isLoggedIn=current_user.is_authenticated)
+
+@app.route("/create/post")
+@login_required
+def get_new_post_page():
+    return render_template('newPost.html'
                            ,isLoggedIn=current_user.is_authenticated)
 
 @app.route("/greatUsers")
@@ -69,21 +67,18 @@ def logout():
 
 @app.route("/upvote", methods=['GET', 'POST'])
 @login_required
-@use_args(
-    {"postID": fields.Int(validate=lambda id: not is_upvoted(username=current_user.username,post_id=id))
-    })
+@use_args({"postID": fields.Int(validate=lambda id: not is_upvoted(username=current_user.username,post_id=id))})
 def upvote(args):
     return insert_upvote(username=current_user.username,post_id=args['postID'])
 
 
 @app.route("/save/comment", methods=['GET', 'POST'])
 @login_required
-@use_args(
-    {"description": fields.Str(validate=lambda val: bool(val.strip())),
-     "topicID": fields.Int(required=True)
-     })
+@use_args({
+    "description": fields.Str(validate=lambda val: bool(val.strip())),
+    "topicID": fields.Int(required=True)
+    })
 def save_comment(args):
-    
     return insert_secondary_post(
         topicID=args["topicID"]
        ,username=current_user.username
@@ -97,17 +92,10 @@ def save_comment(args):
     "title": fields.Str(validate=lambda val: bool(val.strip()))
     })
 def save_post(args):
-    
     post=insert_primary_post(username=current_user.username,description=args["description"],title=args["title"])    
     return redirect(url_for('get_thread_page',topicID=post["topicID"],title=args["title"]))
 
 
-
-@app.route("/create/post")
-@login_required
-def get_new_post_page():
-    return render_template('newPost.html'
-                           ,isLoggedIn=current_user.is_authenticated)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -175,7 +163,7 @@ def callback():
 
     # Create a user in your db with the information provided
     # by Google
-
+    print(unique_id)
     updatedUserName=users_email.split("@")[0]
     user = User(
         id_=unique_id, username=updatedUserName, fullname=users_name, email=users_email, profile_pic=picture
@@ -185,8 +173,12 @@ def callback():
     # if not User.get(unique_id):
     #     User.create(unique_id, users_name, users_email, picture)
     import time
+    print("comparing: ")
+    print(user.serialize)
+    print([user.serialize for user in User.query.all()])
     if not User.query.filter_by(id_=unique_id).first():
         db.session.add(user)
+        db.session.flush()
         db.session.commit()
         time.sleep(1)
         login_user(user)

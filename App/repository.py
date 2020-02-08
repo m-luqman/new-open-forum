@@ -4,48 +4,36 @@ from App.routes import *
 from sqlalchemy.orm import contains_eager
 from operator import itemgetter
 
-row2dict = lambda r: {c.name: str(getattr(r, c.name)) for c in r.__table__.columns}
-#converts a sql row to dict
-
-def flatten_primary_posts(tabularTopics):
-    topics=[]
-    for tabularTopic in tabularTopics:
-        primaryPost=row2dict(tabularTopic.posts[0])
-        topic=row2dict(tabularTopic)
-        for key,value in primaryPost.items():
-            topic[key]=value
-        topics.append(topic)
-    return topics
 
 def get_chronological_topics(offset,limit):
-    tabularTopics= db.session.query(Topic).\
+    topics= db.session.query(Topic).\
         join(Topic.posts).\
         filter(Post.postType == 'PRIMARY').\
         order_by(Post.createdTime.desc()).\
         options(contains_eager(Topic.posts)).\
         all()
 
-    return flatten_primary_posts(tabularTopics)
+    return [topic.serialize_with_one_post for topic in topics]
 
 
 def get_reverse_chronological_posts(topicID,offset,limit):
-    tabularPosts= db.session.query(Post).\
+    posts= db.session.query(Post).\
             filter_by(topicID=topicID).\
             order_by(Post.createdTime).\
             all()
 
-    return [row2dict(post) for post in tabularPosts]
+    return [post.serialize for post in posts]
 
 def get_great_topics(offset=0,limit=10):
 
-    tabularTopics = db.session.query(Topic).\
+    topics = db.session.query(Topic).\
         join(Topic.posts).\
         filter(Post.postType == 'PRIMARY').\
         order_by(Post.upvoteCount.desc(), Topic.secondaryPostCount.desc()).\
         options(contains_eager(Topic.posts)).\
         all()
 
-    return flatten_primary_posts(tabularTopics)
+    return [topic.serialize_with_one_post for topic in topics]
 
 def get_trending_topics(level,offset=0,limit=10):
     
@@ -60,7 +48,7 @@ def get_trending_topics(level,offset=0,limit=10):
     elif level == "month":
         otherday = today - timedelta(31)
 
-    tabularTopics = db.session.query(Topic).\
+    topics = db.session.query(Topic).\
         join(Topic.posts).\
         filter(Post.postType == 'PRIMARY').\
         filter(Post.createdTime.between(otherday, today)).\
@@ -68,22 +56,15 @@ def get_trending_topics(level,offset=0,limit=10):
         options(contains_eager(Topic.posts)).\
         all()
     
-    return flatten_primary_posts(tabularTopics)
+    return [topic.serialize_with_one_post for topic in topics]
     
 def get_great_users(offset=0,limit=10):
     
-    users = User.query.all()
+    users= db.session.query(User).\
+            order_by(User.total_points.desc()).\
+            all()
     
-    _users=[]
-    
-    for user in [row2dict(user) for user in users]:
-        user["totalPoints"]=User.calculate_points(user["primaryPostCount"],user["secondaryPostCount"])
-        user["badge"]=User.calculate_badge(user["totalPoints"])
-        _users.append(user)
-    
-    return sorted(_users, key=itemgetter('totalPoints'), reverse=True) 
- 
-
+    return [user.serialize for user in users]
 
 def insert_secondary_post(topicID,username,description):
     
@@ -102,7 +83,7 @@ def insert_secondary_post(topicID,username,description):
     db.session.add(user)
     db.session.commit()
     
-    return row2dict(secondary_post)
+    return secondary_post.serialize
 
 
 
@@ -122,7 +103,7 @@ def insert_primary_post(username,description,title):
     db.session.add(user)
     db.session.commit()
     
-    return row2dict(primary_post)
+    return primary_post.serialize
 
 
 

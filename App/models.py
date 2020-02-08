@@ -8,7 +8,7 @@ import os
 from flask import Flask
 from flask_migrate import Migrate
 from sqlalchemy.orm import relationship
-
+from sqlalchemy.databases import mysql
 
 @login_manager.user_loader
 def load_user(id_):
@@ -16,49 +16,55 @@ def load_user(id_):
 
 
 class User(UserMixin, db.Model):
-    id_=db.Column(db.Integer,primary_key=True)#goo
+    id_=db.Column(db.String(30),primary_key=True)#goo
     username=db.Column(db.String(20), primary_key=True)#goo
-    #password_hash=db.Column(db.String(128))
     email=db.Column(db.String(50), unique=True)#goo
-    profile_pic=db.Column(db.String(100))#goo
-    fullname=db.Column(db.String(50), nullable=True)#goo
-    dob=db.Column(db.DateTime, default=datetime.datetime.now)
-    #age=db.Column(db.Integer, nullable=True)
-    gender=db.Column(db.String(2), nullable=True)
-    country=db.Column(db.String(20))
-    aboutMe=db.Column(db.String(100))#added
-    joinedOnDate=db.Column(db.DateTime, default=datetime.datetime.now)#added
-    lastSeen=db.Column(db.DateTime, default=datetime.datetime.now)#added
-    
+    joinedOnDate=db.Column(db.DateTime, default=datetime.datetime.now)#added    
     primaryPostCount=db.Column(db.Integer, default=0)
     secondaryPostCount=db.Column(db.Integer, default=0)
-    totalPoints=db.Column(db.Integer, default=0)
 
-    @classmethod
-    def calculate_points(cls,primaryPostCount,secondaryPostCount):
+    profile_pic=db.Column(db.String(200))#goo
+    fullname=db.Column(db.String(50), nullable=True)#goo
+#     dob=db.Column(db.DateTime, default=datetime.datetime.now)
+#     gender=db.Column(db.String(2), nullable=True)
+#     country=db.Column(db.String(20))
+
+#     def avatar(self, size):
+#         digest = md5(self.email.lower().encode('utf-8')).hexdigest()
+#         return 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(digest, size)
+    @property
+    def total_points(self):
+        if not (self.primaryPostCount and self.secondaryPostCount):
+            return 0
         PRIMARY_POST_POINTS=2
         SECONDARY_POST_POINTS=1
-        return PRIMARY_POST_POINTS*int(primaryPostCount)+SECONDARY_POST_POINTS*int(secondaryPostCount)
-    
-    @classmethod
-    def calculate_badge(cls,points):
-        if int(points)<5:
+        return PRIMARY_POST_POINTS*self.primaryPostCount+SECONDARY_POST_POINTS*self.secondaryPostCount
+    @property
+    def badge(self):
+        points=self.total_points
+        if points<5:
             BADGE="contributer"
-        elif int(points)<10:
+        elif points<10:
             BADGE="regular contributer"
-        elif int(points)<50:
+        elif points<50:
             BADGE="great contributer"
         else:
             BADGE="ace contributer"
         return BADGE
 
-    def avatar(self, size):
-        digest = md5(self.email.lower().encode('utf-8')).hexdigest()
-        return 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(digest, size)
+    @property
+    def serialize(self):
+       """Return object data in easily serializable format"""
+       return {
+           'username'   : self.username,
+           'email'      : self.email,
+           'totalPoints': self.total_points,
+           'badge'      : self.badge
+        }
 
     def get_id(self):
         return self.id_
-    
+
     def __repr__(self):
         return "<User {}>".format(self.username)
 
@@ -69,6 +75,20 @@ class Topic(db.Model):
     secondaryPostCount=db.Column(db.Integer, default=0) 
     posts = relationship("Post")
 
+    @property
+    def serialize_with_one_post(self):
+       """Return object data in easily serializable format"""
+       return{**self.serialize,**self.posts[0].serialize}
+
+    @property
+    def serialize(self):
+       """Return object data in easily serializable format"""
+       return{
+           'topicID': self.topicID, 
+           'title': self.title, 
+           'secondaryPostCount': self.secondaryPostCount
+        }
+    
     def __repr__(self):
         return "<Topic {}>".format(self.title)
 
@@ -83,6 +103,26 @@ class Post(db.Model):
     createdTime=db.Column(db.DateTime, default=datetime.datetime.now)
     postType=db.Column(db.String(10), nullable=False)
 
+    @property
+    def serialize(self):
+       """Return object data in easily serializable format"""
+       return {
+           'postID'   : self.postID,
+           'topicID'      : self.topicID,
+           'postingUser': self.postingUser,
+           'description': self.description,
+           'upvoteCount': self.upvoteCount,
+           'createdTime': self.createdTime,
+           'timeAgo': self.time_ago,
+        }
+
+    @property
+    def time_ago(self):
+        import timeago, datetime
+        now = datetime.datetime.now() + datetime.timedelta(seconds = 60 * 3.4)
+        if self.createdTime:
+            return timeago.format(self.createdTime,now) 
+
     def __repr__(self):
         return "<Post {}>".format(self.description)
 
@@ -92,6 +132,5 @@ class Reaction(db.Model):
     postID=db.Column(db.Integer, db.ForeignKey(Post.postID),primary_key=True)
     reactingUser=db.Column(db.String(20), db.ForeignKey(User.username), primary_key=True)
     reactionType=db.Column(db.String(10), default="upvote")
-
 
 db.create_all()

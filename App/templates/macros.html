@@ -111,10 +111,10 @@
                     <a href="#"><b><span class='username'>{{user}}</span></b></a>
                 </div>
                 <h6 class="text-muted time">
-                posted on:
+                posted 
                 <i class="fa fa-clock-o" aria-hidden="true"></i>
                 <span class='time'>
-                {% set truncTime= createdTime|string %} {{ truncTime.split(".")[0] }}
+                {{createdTime}}
                 </span>
                 </h6>
             </div>
