@@ -7,6 +7,7 @@ from flask_login import UserMixin
 from oauthlib.oauth2 import WebApplicationClient
 import sentry_sdk
 from sentry_sdk.integrations.flask import FlaskIntegration
+from imgurpython import ImgurClient
 
 
 app = Flask(__name__)
@@ -16,6 +17,7 @@ login_manager.login_view = 'login'
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
+imgur_client = ImgurClient(app.config['IMGUR_CLIENT_ID'], app.config['IMGUR_CLIENT_ID'])
 google_client = WebApplicationClient(app.config['GOOGLE_CLIENT_ID'])
 sentry_sdk.init(
     dsn=app.config['SENTRY_KEY'],

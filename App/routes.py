@@ -10,12 +10,9 @@ from flask import jsonify
 from webargs import fields
 from webargs.flaskparser import use_args
 from App import repository
-from App import app, google_client, db, login_manager
+from App import app, google_client, imgur_client, db, login_manager
 from flask.json import jsonify
-from werkzeug.utils import secure_filename
-from os.path import join, dirname, realpath
-from _testbuffer import staticarray
-from urllib.parse import urlparse
+import base64
 
 def get_google_provider_cfg():
     return requests.get(app.config['GOOGLE_DISCOVERY_URL']).json()
@@ -203,18 +200,14 @@ def callback():
 
 @app.route("/upload/image", methods=['GET', 'POST'])
 def upload_image():
-    image_links=[]
-    parsed_uri = urlparse(request.base_url)
-    #https://stackoverflow.com/questions/43062047/how-can-i-get-current-base-uri-in-flask
-    #https://stackoverflow.com/questions/9626535/get-protocol-host-name-from-url
-    result = '{uri.scheme}://{uri.netloc}/'.format(uri=parsed_uri)
+    image_links=[]   
     if request.method == "POST":
         for image in request.files.values():
-            filename = secure_filename(image.filename)
-            filepath=result+"static/images/"+filename
-            image.save(filepath)
-            image_links.append(filepath)
-            
+            b64 = base64.b64encode(image.read())
+            data = {'image': b64, 'type': 'base64'}
+            response=imgur_client.make_request('POST', 'upload', data, True)
+            image_links.append(response["link"])
+    
     return jsonify(image_links)    
 
 # @app.route("/register")
