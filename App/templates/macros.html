@@ -122,7 +122,10 @@
     </div>
 {% endmacro %}
 
-{% macro create_card(isLoggedIn,user="",description="",createdTime="",cardID="",upvoteCount="") %}
+{% macro create_card(isLoggedIn,user="",description="",createdTime="",cardID="",upvoteCount="",postType="") %}
+	<!-- {% if postType=="PRIMARY" %}
+	{% else %}
+	{% endif %} -->
 	<div class="thread-card container card card-white post mb-2" style="padding-left: 0px;padding-right: 0px;">
         <div class="post-heading">
             <div class="float-left meta">

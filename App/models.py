@@ -120,7 +120,8 @@ class Post(db.Model):
            'description': self.description,
            'upvoteCount': self.upvoteCount,
            'createdTime': self.createdTime,
-           'timeAgo': self.time_ago,
+           'postType': self.postType,
+           'timeAgo': self.time_ago
         }
 
     @property
