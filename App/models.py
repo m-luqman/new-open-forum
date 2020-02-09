@@ -78,7 +78,7 @@ class User(UserMixin, db.Model):
 
 class Topic(db.Model):
     topicID=db.Column(db.Integer, primary_key=True)
-    title=db.Column(db.String(50), nullable=False)
+    title=db.Column(db.String(25), nullable=False)
     secondaryPostCount=db.Column(db.Integer, default=0) 
     posts = relationship("Post")
 
