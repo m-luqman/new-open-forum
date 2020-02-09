@@ -126,7 +126,7 @@ class Post(db.Model):
     @property
     def time_ago(self):
         import timeago, datetime
-        now = datetime.datetime.now() + datetime.timedelta(seconds = 60 * 3.4)
+        now = datetime.datetime.now()
         if self.createdTime:
             return timeago.format(self.createdTime,now) 
 
