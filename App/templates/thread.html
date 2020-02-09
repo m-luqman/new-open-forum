@@ -23,32 +23,35 @@
 	<div class="card-heading card-white p-3 text-white">
 		<h4>{{title}}</h4>
 	</div>
+
+
+
 	<div id="comment-section">	
-		{% for post in posts %}
-	
+
 			{{
 				create_card(
-					user=post["postingUser"]
-				   ,description=post["description"]
-				   ,createdTime=post["timeAgo"]
+					user=posts[0]["postingUser"]
+				   ,description=posts[0]["description"]
+				   ,createdTime=posts[0]["timeAgo"]
 				   ,isLoggedIn=isLoggedIn
-				   ,cardID=post["postID"]
-				   ,upvoteCount=post["upvoteCount"]
-				   ,postType=post["postType"]
+				   ,cardID=posts[0]["postID"]
+				   ,upvoteCount=posts[0]["upvoteCount"]
 				)
 			}}
-				
-		{% endfor %}
+
+
 	</div>
-	
+
 	{% if isLoggedIn %}
 		
 		<form id="comment-box" class="card card-white post py-md-3 px-md-3">
 			<div class="form-group">
-				<label for="comment">Comment:</label>
-				<textarea class="form-control" rows="5" name="description" id="comment-description"></textarea>
+				<label for="comment">Leave a Comment:</label>
+				<textarea class="form-control" rows="3" name="description"
+				placeholder="What are your thoughts?" id="comment-description"></textarea>
+				<br>
 				<input style="display:none" name="topicID" value="{{posts[0]['topicID']}}">
-				{{button("create comment")}}
+				{{button("Comment")}}
 			</div>
 		</form>
 		
@@ -57,6 +60,32 @@
 		{{login_button("Login to create a comment")}}
 
 	{% endif %}
+
+<br>
+
+	<h3> <span class="badge badge-light">{{ posts|length - 1 }} Comments!</span> </h3>
+
+
+	<div id="comment-section">	
+
+
+		{% for i in range(1, posts|length) %}
+			
+				{{
+					create_card(
+						user=posts[i]["postingUser"]
+					   ,description=posts[i]["description"]
+					   ,createdTime=posts[i]["timeAgo"]
+					   ,isLoggedIn=isLoggedIn
+					   ,cardID=posts[i]["postID"]
+					   ,upvoteCount=posts[i]["upvoteCount"]
+					)
+				}}
+				
+		{% endfor %}
+	</div>
+	
+	
 
 	<script>
 		
