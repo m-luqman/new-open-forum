@@ -50,13 +50,13 @@ class User(UserMixin, db.Model):
     def badge(self):
         points=self.total_points
         if points<5:
-            BADGE="contributer"
+            BADGE="Contributor"
         elif points<10:
-            BADGE="regular contributer"
+            BADGE="Regular Contributor"
         elif points<50:
-            BADGE="great contributer"
+            BADGE="Great Contributor"
         else:
-            BADGE="ace contributer"
+            BADGE="Ace Contributor"
         return BADGE
 
     @property
