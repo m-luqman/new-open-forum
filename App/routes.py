@@ -207,9 +207,8 @@ def upload_image():
     if request.method == "POST":
         for image in request.files.values():
             filename = secure_filename(image.filename)
-            save_path=url_for("static",filename="images/"+filename)
-            image.save(save_path)
-            image_links.append(save_path)
+            image.save(url_for("static",filename="images/"+filename))
+            image_links.append(url_for("static",filename="images/"+filename))
             
     return jsonify(image_links)    
 
