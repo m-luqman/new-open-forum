@@ -25,11 +25,11 @@ def get_home_page(offset=0,limit=10):
                            ,isLoggedIn=current_user.is_authenticated)
 
 
-@app.route("/thread/<string:topicID>/<string:title>")
-def get_thread_page(topicID,title,offset=0,limit=10):
+@app.route("/thread/<string:topicID>")
+def get_thread_page(topicID,offset=0,limit=10):
     
     return render_template('thread.html'
-                           ,title=title
+                           ,topic=get_topic(topicID)
                            ,posts=get_reverse_chronological_posts(topicID,offset=offset,limit=limit)
                            ,isLoggedIn=current_user.is_authenticated)
 

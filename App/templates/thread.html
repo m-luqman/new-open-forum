@@ -1,5 +1,4 @@
 {% from 'macros.html' import header %}
-{% from 'macros.html' import topic %}
 {% from 'macros.html' import create_card %}
 {% from 'macros.html' import head %}
 {% from 'macros.html' import formulate_link %}
@@ -12,7 +11,7 @@
 <!DOCTYPE html>
 
 <head>
-	{{head(title=title)}}
+	{{head(title=topic["title"])}}
 	<link href="{{ url_for('static', filename='css/thread.css') }}" rel="stylesheet">
   	<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
@@ -21,7 +20,7 @@
 
 	{{header(isLoggedIn)}}
 	<div class="card-heading card-white p-3 text-white">
-		<h4>{{title}}</h4>
+		<h4>{{topic["title"]}}</h4>
 	</div>
 	<div id="comment-section">	
 		{% for post in posts %}
@@ -34,29 +33,37 @@
 				   ,isLoggedIn=isLoggedIn
 				   ,cardID=post["postID"]
 				   ,upvoteCount=post["upvoteCount"]
-				   ,postType=post["postType"]
 				)
 			}}
-				
-		{% endfor %}
-	</div>
+			
+			{% if post["postType"]=="PRIMARY" %}
+											
+				{% if isLoggedIn %}
+			
+					<form id="comment-box" class="card card-white post mb-3 py-md-3 px-md-3">
+						<div class="form-group">
+							<label for="comment">Leave a Comment:</label>
+							<textarea class="form-control" rows="3" name="description"
+							placeholder="What are your thoughts?" id="comment-description"></textarea>
+							<br>
+							<input style="display:none" name="topicID" value="{{posts[0]['topicID']}}">
+							{{button("Comment")}}
+						</div>
+					</form>
+					
+				{% else %}
+			
+					{{login_button("Login to create a comment")}}
+			
+				{% endif %}
+
+				<h3> <span class="badge badge-light">{{topic["secondaryPostCount"]}} Comment(s)</span> </h3>
+
+			{% endif %}
 	
-	{% if isLoggedIn %}
-		
-		<form id="comment-box" class="card card-white post py-md-3 px-md-3">
-			<div class="form-group">
-				<label for="comment">Comment:</label>
-				<textarea class="form-control" rows="5" name="description" id="comment-description"></textarea>
-				<input style="display:none" name="topicID" value="{{posts[0]['topicID']}}">
-				{{button("create comment")}}
-			</div>
-		</form>
-		
-	{% else %}
+		{% endfor %}
 
-		{{login_button("Login to create a comment")}}
-
-	{% endif %}
+	</div>	
 
 	<script>
 		

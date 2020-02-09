@@ -28,7 +28,7 @@
 
 			{{
 			create_topic(
-				url=url_for('get_thread_page',topicID=topic["topicID"],title=topic["title"])
+				url=url_for('get_thread_page',topicID=topic["topicID"])
 			   ,title=topic["title"]
 			   ,noOfComments=topic["secondaryPostCount"]
 			   ,user=topic["postingUser"]

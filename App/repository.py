@@ -66,6 +66,9 @@ def get_great_users(offset=0,limit=10):
     
     return [user.serialize for user in users]
 
+def get_topic(topic_id):
+    return Topic.query.get(topic_id).serialize
+    
 def insert_secondary_post(topicID,username,description):
     
     secondary_post=Post(topicID=topicID,description=description,postingUser=username,postType="SECONDARY")
