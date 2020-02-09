@@ -12,7 +12,7 @@ A web application for an open forum platform. Users can create a new thread and 
 
 ### API Documentation
 
-The API documentation can be found [will put Postman collection link soon](http://docs.jedicarpool.apiary.io).
+The API documentation can be found here [Postman Link](https://www.getpostman.com/collections/9d5517095fcec4866f22).
 
 ### Requirements
 
@@ -32,6 +32,8 @@ The requirements for the application:
 1. Python 3
 2. Flask
 3. SQL-ALchemy
+4. Sentry
+5. ImgurPython API
 
 ### How To Run:
  
