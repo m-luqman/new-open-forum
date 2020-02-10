@@ -13,6 +13,7 @@ A web application for an open forum platform. Users can create a new thread and 
 ### API Documentation
 
 The API documentation can be found [Postman Link](https://www.getpostman.com/collections/9d5517095fcec4866f22).
+[Web](https://web.postman.co/collections/10200133-a127554b-d7a3-4278-a35c-fa2f111ccf94?version=latest&workspace=d8319ba7-43d2-46fd-8445-a7e1b150bb5d)
 
 ### Requirements
 
