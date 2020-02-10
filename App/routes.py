@@ -13,6 +13,7 @@ from App import repository
 from App import app, google_client, imgur_client, db, login_manager
 from flask.json import jsonify
 import base64
+from flask_simple_geoip import SimpleGeoIP
 
 def get_google_provider_cfg():
     return requests.get(app.config['GOOGLE_DISCOVERY_URL']).json()
@@ -36,6 +37,7 @@ def get_thread_page(topicID,offset=0,limit=10):
 @app.route("/leaderboard")
 def get_leaderboard_page():
     return render_template('leaderboard.html'
+                           ,greatUsers=repository.get_great_users()
                            ,isLoggedIn=current_user.is_authenticated)
 
 @app.route("/create/post")
@@ -43,11 +45,6 @@ def get_leaderboard_page():
 def get_new_post_page():
     return render_template('newPost.html'
                            ,isLoggedIn=current_user.is_authenticated)
-
-@app.route("/greatUsers")
-def get_great_users():
-    return jsonify(repository.get_great_users())
-
 
 @app.route("/greatTopics")
 def get_great_topics():
@@ -57,7 +54,6 @@ def get_great_topics():
 @app.route("/trendingTopics/<string:level>")
 def get_trending_topics(level):
     return jsonify(repository.get_trending_topics(level))
-
 
 @app.route('/logout')
 @login_required
@@ -165,8 +161,12 @@ def callback():
     # Create a user in your db with the information provided
     # by Google
     updatedUserName=users_email.split("@")[0]
+    app.config["GEOIPIFY_API_KEY"] = "at_10EgOLaClU1CcSOcU1bw2aozrE70H"
+    simple_geoip = SimpleGeoIP(app)
+    geoip_data = simple_geoip.get_geoip_data()
+    print((geoip_data))
     user = User(
-        id_=unique_id, username=updatedUserName, fullname=users_name, email=users_email, profile_pic=picture
+        id_=unique_id, country=geoip_data["location"]["country"],region=geoip_data["location"]["region"],city=geoip_data["location"]["city"],username=updatedUserName, fullname=users_name, email=users_email, profile_pic=picture
     )
 
     # Doesn't exist? Add it to the database.
@@ -210,9 +210,7 @@ def upload_image():
     
     return jsonify(image_links)    
 
-# @app.route("/register")
-
-
+    
 
 if __name__ == '__main__':  # Script executed directly?
     app.run(ssl_context="adhoc")  # Launch built-in web server and run this Flask webapp

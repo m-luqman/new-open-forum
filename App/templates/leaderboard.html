@@ -15,48 +15,140 @@
 </head>
 
 <body class="container">
+<style>
 
+#page-content {
+    margin-top: 50px
+}
+
+.flex {
+    -webkit-box-flex: 1;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto
+}
+
+.badge {
+    display: inline-block;
+    padding: .25em .4em;
+    font-size: 75%;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: .15rem;
+    transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out
+}
+
+table {
+    border-collapse: collapse
+}
+
+.table-theme {
+    border-spacing: 0
+}
+
+.table-theme thead {
+    font-size: .7rem
+}
+
+.table-theme tbody td {
+    background-color: #fff;
+    border-width: 0;
+    box-shadow: 0 1px 0 rgba(160, 175, 185, .05), 0 -1px 0 rgba(160, 175, 185, .05)
+}
+
+.table-theme tbody td:first-child {
+    border-radius: .25rem 0 0 .25rem
+}
+
+.table-theme tbody td:last-child {
+    border-radius: 0 .25rem .25rem 0
+}
+
+.table-row {
+    border-collapse: separate !important;
+    border-spacing: 0 10px !important
+}
+
+.table.v-middle td,
+.table.v-middle th {
+    vertical-align: middle
+}
+
+.bg-success-lt {
+    color: #27a05a !important;
+    background-color: #def6e8 !important
+}
+
+.bg-success-lt.active,
+.bg-success-lt:focus,
+.bg-success-lt:hover {
+    color: #fff !important;
+    background-color: #31c971 !important
+}
+
+@media (min-width: 992px) {
+    .page-container {
+        max-width: 1140px;
+        margin: 0 auto
+    }
+}
+ul.nav li a, ul.nav li a:visited {
+    color: rgba(0,0,0,1) !important;
+}
+
+ul.nav li a:hover, ul.nav li a:active {
+    color: rgba(0,0,0,.7) !important;
+}
+
+ul.nav li.active a {
+    color: rgba(0,0,0,1) !important;
+}
+</style>
 	{{header(isLoggedIn)}}
 	<div class="ibox-content ">
 		<ul class="nav nav-tabs" id="myTab" role="tablist">
 		  <li class="nav-item">
-		    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">All time great users</a>
+		    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#great-users" role="tab" aria-selected="true">All time great users</a>
 		  </li>
 		  <li class="nav-item">
-		    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">All time great topics</a>
+		    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#great-topics" role="tab" aria-selected="false">All time great topics</a>
 		  </li>
 		  <li class="nav-item">
-		    <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Trending topics</a>
+		    <a class="nav-link" id="contact-tab" data-toggle="tab" href="#trending-topics" role="tab" aria-selected="false">Trending topics</a>
 		  </li>
 		</ul>
 		<div class="tab-content" id="myTabContent">
-		  <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-			<table 
-				id="greatUsers"
-				data-url="/greatUsers"
-				data-toggle="table" 
-				data-virtual-scroll="true" 
-				data-pagination="true"
-				data-pagination-v-align="top"
-				data-search="true" 
-				data-show-search-clear-button="true" 
-				data-mobile-responsive="true" 
-				data-check-on-init="true" 
-				data-min-width="750">
-				<thead>
-					<tr id="iwoq03">
-						<th data-field="username">Username
-						</th>
-						<th data-field="totalPoints">Points
-						</th>
-						<th data-field="badge">Badge
-						</th>
-					</tr>
-				</thead>
-				<tr></tr>
-			</table>
+		  <div class="tab-pane fade show active" id="great-users" role="tabpanel" >
+			<div class="page-content page-container" id="page-content">
+			    <div class="padding">
+			        <div class="table-responsive">
+			            <table class="table table-theme table-row v-middle">
+				                <thead>
+				                    <tr>
+				                        <th class="text-muted" style="width:60px">Badge</th>
+				                        <th class="text-muted">Username</th>
+				                        <th class="text-muted" style="width:50px">Points</th>
+				                    </tr>
+				                </thead>
+			                <tbody>
+							{% for user in greatUsers %}
+			                    <tr class="v-middle">
+			                        <td><span class="badge badge-success text-uppercase">{{user["badge"]}}</span></td>
+			                        <td class="flex">
+			                            <div class="bg-light r r-3 py-1 my-1">{{user["username"]}}</div>
+			                        </td>
+			                        <td><span class="badge bg-success-lt">{{user["totalPoints"]}}</span></td>
+			                    </tr>
+							{% endfor %}
+			                </tbody>
+			            </table>
+			        </div>
+			    </div>
+			</div>
 		  </div>
-		  <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+		  <div class="tab-pane fade" id="great-topics" role="tabpanel" aria-labelledby="profile-tab">
 			<table 
 				id="greatTopics"
 				data-url="/greatTopics"
@@ -80,7 +172,7 @@
 				<tr></tr>
 			</table>
 		  </div>
-		  <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+		  <div class="tab-pane fade" id="trending-topics" role="tabpanel" aria-labelledby="contact-tab">
 			<div class="dropdown mt-5">
 			  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 			    Date range: <span id="selected-range"></span>

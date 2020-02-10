@@ -26,9 +26,11 @@ class User(UserMixin, db.Model):
 
     profile_pic=db.Column(db.String(200))#goo
     fullname=db.Column(db.String(50), nullable=True)#goo
+    country=db.Column(db.String(20))
+    region=db.Column(db.String(20))
+    city=db.Column(db.String(20))
 #     dob=db.Column(db.DateTime, default=datetime.datetime.now)
 #     gender=db.Column(db.String(2), nullable=True)
-#     country=db.Column(db.String(20))
 
 #     def avatar(self, size):
 #         digest = md5(self.email.lower().encode('utf-8')).hexdigest()
@@ -129,7 +131,7 @@ class Post(db.Model):
         import timeago, datetime
         now = datetime.datetime.now()
         if self.createdTime:
-            return timeago.format(self.createdTime,now) 
+            return timeago.format(self.createdTime,now)
 
     def __repr__(self):
         return "<Post {}>".format(self.description)

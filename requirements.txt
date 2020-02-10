@@ -27,3 +27,4 @@ requests
 webargs
 sentry-sdk[flask]==0.14.1
 imgurpython
+flask-simple-geoip
