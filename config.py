@@ -11,3 +11,4 @@ class Config(object):
     IMGUR_CLIENT_ID=os.environ.get("IMGUR_CLIENT_ID")
     GOOGLE_DISCOVERY_URL = "https://accounts.google.com/.well-known/openid-configuration"
     SENTRY_KEY = os.environ.get("SENTRY_KEY")
+    GEOIPIFY_API_KEY=os.environ.get("GEOIPIFY_API_KEY")

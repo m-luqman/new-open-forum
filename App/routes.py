@@ -161,7 +161,6 @@ def callback():
     # Create a user in your db with the information provided
     # by Google
     updatedUserName=users_email.split("@")[0]
-    app.config["GEOIPIFY_API_KEY"] = "at_10EgOLaClU1CcSOcU1bw2aozrE70H"
     simple_geoip = SimpleGeoIP(app)
     geoip_data = simple_geoip.get_geoip_data()
     print((geoip_data))
