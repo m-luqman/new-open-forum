@@ -10,10 +10,9 @@ from flask import jsonify
 from webargs import fields
 from webargs.flaskparser import use_args
 from App import repository
-from App import app, google_client, imgur_client, db, login_manager
+from App import app, google_client, imgur_client,geoip_client, db, login_manager
 from flask.json import jsonify
 import base64
-from flask_simple_geoip import SimpleGeoIP
 
 def get_google_provider_cfg():
     return requests.get(app.config['GOOGLE_DISCOVERY_URL']).json()
@@ -161,8 +160,7 @@ def callback():
     # Create a user in your db with the information provided
     # by Google
     updatedUserName=users_email.split("@")[0]
-    simple_geoip = SimpleGeoIP(app)
-    geoip_data = simple_geoip.get_geoip_data()
+    geoip_data = geoip_client.lookup(request.remote_addr)
     print((geoip_data))
     user = User(
         id_=unique_id, country=geoip_data["location"]["country"],region=geoip_data["location"]["region"],city=geoip_data["location"]["city"],username=updatedUserName, fullname=users_name, email=users_email, profile_pic=picture
