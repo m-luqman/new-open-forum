@@ -169,7 +169,7 @@ def callback():
     geoip_data = geoip_client.lookup(ip)
     print((geoip_data))
     user = User(
-        id_=unique_id, country=geoip_data["location"]["country"],region=geoip_data["location"]["region"],city=geoip_data["location"]["city"],username=updatedUserName, fullname=users_name, email=users_email, profile_pic=picture
+        id_=unique_id, country=geoip_data["location"]["country"],region=geoip_data["location"]["region"],username=updatedUserName, fullname=users_name, email=users_email, profile_pic=picture
     )
 
     # Doesn't exist? Add it to the database.

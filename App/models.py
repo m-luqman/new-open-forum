@@ -28,7 +28,6 @@ class User(UserMixin, db.Model):
     fullname=db.Column(db.String(50), nullable=True)#goo
     country=db.Column(db.String(20))
     region=db.Column(db.String(20))
-    city=db.Column(db.String(20))
 #     dob=db.Column(db.DateTime, default=datetime.datetime.now)
 #     gender=db.Column(db.String(2), nullable=True)
 
