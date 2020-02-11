@@ -160,7 +160,13 @@ def callback():
     # Create a user in your db with the information provided
     # by Google
     updatedUserName=users_email.split("@")[0]
-    geoip_data = geoip_client.lookup(request.remote_addr)
+    
+    if request.environ.get('HTTP_X_FORWARDED_FOR') is None:
+        ip=request.environ['REMOTE_ADDR']
+    else:
+        ip=request.environ['HTTP_X_FORWARDED_FOR']
+    
+    geoip_data = geoip_client.lookup(ip)
     print((geoip_data))
     user = User(
         id_=unique_id, country=geoip_data["location"]["country"],region=geoip_data["location"]["region"],city=geoip_data["location"]["city"],username=updatedUserName, fullname=users_name, email=users_email, profile_pic=picture
