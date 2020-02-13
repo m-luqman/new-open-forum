@@ -57,7 +57,7 @@
 			
 				{% endif %}
 
-				<h3> <span class="badge badge-light">{{topic["secondaryPostCount"]}} Comment(s)</span> </h3>
+				<h3> <span class="badge badge-light"><span id="comment-count">{{topic["secondaryPostCount"]}}</span> Comment(s)</span> </h3>
 
 			{% endif %}
 	
@@ -129,6 +129,8 @@
 
 					$("#comment-section .thread-card .upvote ")
 						.last().attr("data-id",response["postID"]);
+					
+					$('#comment-count').html(parseInt($('#comment-count').html(), 10)+1);
 
 			    })
 			    .fail(function(xhr, status, error) {
